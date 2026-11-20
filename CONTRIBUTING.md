@@ -48,6 +48,7 @@ Before opening a pull request:
 
 ```bash
 make check    # fmt, vet, test
+make lint     # golangci-lint at the version CI pins
 ```
 
 ## How the code is organised
@@ -152,6 +153,11 @@ it.
 ## Style
 
 - Standard Go. `gofmt` is enforced by `make check`.
+- `make lint` runs golangci-lint with `.golangci.yml`, at the same pinned
+  version as CI (via `go run`, so nothing needs installing). Fix findings rather
+  than suppressing them; when a finding is a false positive, suppress only that
+  line with `//nolint:<linter> // reason`. A bare or unexplained `//nolint` is
+  itself a lint error.
 - Use `log/slog` for logging. Never log key material.
 - Comments should explain *why*, not restate the code. The tricky parts of this
   codebase — manual transaction assembly, the two-transaction deploy, comparing

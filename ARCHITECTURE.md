@@ -6,7 +6,7 @@ SoroForge is a Go CLI and HTTP service for deploying Soroban contracts. Both ent
 
 - `cmd/soroforge/` defines Cobra commands, loads the application dependencies, and formats CLI output.
 - `internal/config/` reads and validates `soroforge.yaml` and environment settings, including network, constructor argument, signer, and storage configuration.
-- `internal/deploy/` owns deploy, upgrade, invoke, track, status, and transaction orchestration. It coordinates the interfaces below rather than binding to a database or RPC implementation.
+- `internal/deploy/` owns deploy, upgrade, invoke, track, status, and transaction orchestration. It coordinates the interfaces below rather than binding to a database or RPC implementation. **Example: `soroforge deploy contract --alias my-contract --wasm ./counter.wasm`**
 - `internal/stellar/` implements the Stellar RPC client, signing, operation construction, and XDR helpers. `stellar.Client` is the boundary used by deployment code.
 - `internal/store/` defines `store.Store` and its memory, SQLite, and Postgres implementations. Embedded migrations in `migrations/sqlite/` and `migrations/postgres/` share version numbers; tests check that both dialects produce matching schemas.
 - `internal/api/` exposes authenticated HTTP routes and JSON handling. It delegates contract behavior to the deployment service.

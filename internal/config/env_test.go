@@ -119,6 +119,61 @@ func TestParseCORSOrigins(t *testing.T) {
 	})
 }
 
+func TestValidateCORSOrigin(t *testing.T) {
+	tests := map[string]struct {
+		origin  string
+		wantErr string
+	}{
+		"https origin": {
+			origin: "https://dash.example.com",
+		},
+		"http origin with a port": {
+			origin: "http://localhost:3000",
+		},
+		"wildcard is rejected": {
+			origin:  "*",
+			wantErr: `must not contain "*"`,
+		},
+		"wildcard subdomain is rejected": {
+			origin:  "https://*.example.com",
+			wantErr: `must not contain "*"`,
+		},
+		"empty origin is rejected": {
+			origin:  "",
+			wantErr: "not a valid origin",
+		},
+		"non-http scheme is rejected": {
+			origin:  "ftp://dash.example.com",
+			wantErr: "not a valid origin",
+		},
+		"missing host is rejected": {
+			origin:  "https://",
+			wantErr: "not a valid origin",
+		},
+		"path is rejected": {
+			origin:  "https://dash.example.com/app",
+			wantErr: "not a valid origin",
+		},
+		"trailing slash is rejected": {
+			origin:  "https://dash.example.com/",
+			wantErr: "not a valid origin",
+		},
+	}
+
+	for name, tc := range tests {
+		t.Run(name, func(t *testing.T) {
+			err := ValidateCORSOrigin(tc.origin)
+			if tc.wantErr == "" {
+				require.NoError(t, err)
+				return
+			}
+			require.Error(t, err)
+			assert.ErrorContains(t, err, EnvAPICORSOrigins)
+			assert.ErrorContains(t, err, tc.wantErr)
+		})
+	}
+}
+
 func TestListenAddrDefaultsToLoopback(t *testing.T) {
 	// The process holds a signing key; exposing it beyond loopback should be a
 	// deliberate act, not a default.
