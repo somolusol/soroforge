@@ -13,9 +13,9 @@ func TestMockClientSendCount(t *testing.T) {
 	ctx := context.Background()
 
 	tests := []struct {
-		name       string
-		setup      func(*MockClient)
-		sendCount  int
+		name      string
+		setup     func(*MockClient)
+		sendCount int
 	}{
 		{
 			name:      "happy path - no sends",
